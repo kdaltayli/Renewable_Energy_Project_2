@@ -7,7 +7,7 @@ def webscrape():
     import requests
     
     #define browser
-    executable_path = {'executable_path':"/Users/kursadaltayli/Downloads/chromedriver"}
+   executable_path = {'executable_path':"/Users/kursadaltayli/Downloads/chromedriver"}
     browser = Browser('chrome', **executable_path, headless=False)
     # url = 'https://justenergy.com/blog/7-types-renewable-energy-future-of-energy/#:~:text=Renewable%20energy%20is%20energy%20that,less%20harmful%20to%20the%20environment.'
     url = 'https://justenergy.com/blog/7-types-renewable-energy-future-of-energy'

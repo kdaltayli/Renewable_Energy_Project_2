@@ -1,4 +1,4 @@
-
+from config import username,password,dbname
 import pandas as pd
 from pprint import pprint
 import pymongo
@@ -130,6 +130,8 @@ def topTwelveCountryGdp(gdp_dframe):
     return gdp_top
 
 
+
+
 # ## Death Rate based on Air Pollution in every 100,000 people
 # Death rates are measured as the number of premature deaths attributed to outdoor air pollution per 100,000 individuals in a given demographic.
 def cleanAirPollution(dbpath):
@@ -147,10 +149,10 @@ def cleanAirPollution(dbpath):
     # clear_data_air.drop(columns=["Code"],inplace=True)
     return clear_data_air
 
-# def mergedCountries(sourcedf, gdpdf, airdf):
-#     merge1 = pd.merge(sourcedf, airdf, on="Country", how="inner")
-#     merge2 = pd.merge(merge1, gdpdf, on="Country", how="inner")
-#     return merge2
+def mergedCountries(sourcedf, gdpdf, airdf):
+    merge1 = pd.merge(sourcedf, airdf, on="Country", how="inner")
+    merge2 = pd.merge(merge1, gdpdf, on="Country", how="inner")
+    return merge2
 
 # ## Merging all the data tables
 def mergeEnergyData(dbpath):
@@ -164,7 +166,8 @@ def mergeEnergyData(dbpath):
 
 # ## Connect and Delete the collection from Mongo
 def deleteFromMongo(collectionName):
-    conn = 'mongodb://localhost:27017'
+    conn = f'mongodb+srv://{username}:{password}@cluster0.zdhdq.mongodb.net/{dbname}?retryWrites=true&w=majority'
+    # conn = 'mongodb://localhost:27017'
     client = pymongo.MongoClient(conn)
     db = client.renewable_energy
     db[collectionName].drop()
@@ -191,7 +194,7 @@ def insertIntoMongo(collectionName, temp_dict):
     # Define the Database in Mongo
     db = client.renewable_energy
     name_scrape = db['Webscrapedata']
-    name_scrape.insert_many(temp_dict)
+    name_scrape.insert(temp_dict)
     client.close()
 
 
@@ -214,7 +217,7 @@ def cleanUp(dbpath):
     deleteFromMongo("lasttenyearrenewpercent")
     deleteFromMongo("top_twelve_gdp")
     deleteFromMongo("Webscrapedata")
-    deleteFromMongo("countrycommon")
+    # deleteFromMongo("countrycommon")
 
     updateIntoMongo("energysource", src_df)
     updateIntoMongo("energyshare", share_df)
@@ -226,4 +229,4 @@ def cleanUp(dbpath):
     # updateIntoMongo("countrycommon", country_df)
     insertIntoMongo("Webscrapedata", scrape_dict)
 
-cleanUp(data_path)
+# cleanUp(data_path)

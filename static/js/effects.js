@@ -9,51 +9,50 @@ energy_data_path = "http://127.0.0.1:5000/energysource"
 // var country_list_2 = []
 // var country_list_3 = []
 
+d3.json(dbpath).then(function (air_dataSample) {
+    console.log(air_dataSample);
+    var air_countries = air_dataSample.map(d => d.country)
+    var air_uniqueNames = air_countries.filter((value, index, self) => self.indexOf(value) === index);
+
+    d3.json(gdpdata_path).then(function (gdp_dataSample) {
+        var filteredArray1 = gdp_dataSample.filter( function( el ) {
+            return air_uniqueNames.includes( el.country );
+        });
+        var gdp_countries = filteredArray1.map(d => d.country)
+        var gdp_uniqueNames = gdp_countries.filter((value, index, self) => self.indexOf(value) === index);
+        console.log("filtered")
+        console.log(gdp_uniqueNames)
+
+        d3.json(energy_data_path).then(function (src_dataSample) {
+            var filteredArray2 = src_dataSample.filter( function( el ) {
+                return gdp_uniqueNames.includes( el.country );
+            });
+            var src_countries = filteredArray2.map(d => d.country)
+            var src_uniqueNames = src_countries.filter((value, index, self) => self.indexOf(value) === index);
+            console.log("filtered")
+            console.log(src_uniqueNames)
+
+            src_uniqueNames.forEach(item =>
+                d3.select("#selDataset")
+                        .append("option")
+                        .text(item)
+                );
+        });
+    });
+});
+
+
 // d3.json(dbpath).then(function (dataSample) {
 //     console.log(dataSample);
 //     var countries = dataSample.map(d => d.country)
 //     var uniqueNames = countries.filter((value, index, self) => self.indexOf(value) === index);
-
-//     country_list_1 = uniqueNames
-
-//     d3.json(gdpdata_path).then(function (dataSample_1) {
-//         filteredArray1 = dataSample_1.filter( function( el ) {
-//             return country_list_1.includes( el.country );
-//         });
-//         var countries_2 = filteredArray1.map(d => d.country)
-//         var uniqueNames_2 = countries_2.filter((value, index, self) => self.indexOf(value) === index);
-//         country_list_2 = uniqueNames_2
-
-//         d3.json(energy_data_path).then(function (dataSample_2) {
-//             filteredArray2 = dataSample_2.filter( function( el ) {
-//                 return country_list_2.includes( el.country );
-//             });
-//             var countries_3 = filteredArray2.map(d => d.country)
-//             var uniqueNames_3 = countries_3.filter((value, index, self) => self.indexOf(value) === index);
-//             country_list_3 = uniqueNames_3
-
-//             country_list_3.forEach(item =>
-//                 d3.select("#selDataset")
-//                     .append("option")
-//                     .text(item)
-//             );
-//         });
-//     });
+//     // console.log(uniqueNames)
+//     uniqueNames.forEach(item =>
+//         d3.select("#selDataset")
+//             .append("option")
+//             .text(item)
+//     );
 // });
-
-
-
-d3.json(dbpath).then(function (dataSample) {
-    console.log(dataSample);
-    var countries = dataSample.map(d => d.country)
-    var uniqueNames = countries.filter((value, index, self) => self.indexOf(value) === index);
-    // console.log(uniqueNames)
-    uniqueNames.forEach(item =>
-        d3.select("#selDataset")
-            .append("option")
-            .text(item)
-    );
-});
 
 // Function to plot line chart for deaths due to air pollution - country wise
 function lineChart(selectedCountry) {
@@ -255,14 +254,14 @@ function optionChanged(selectItem) {
 }
 
 function init() {
-    d3.json(dbpath).then(function (dataSample) {                
+    d3.json(energy_data_path).then(function (dataSample) {                
         var firstItem = dataSample[0].country;
         console.log(`first item :  ${firstItem}`);
-        polarAreaChart(firstItem);
-        bubbleChart(firstItem);
-        lineChart(firstItem);
+        polarAreaChart("Algeria");
+        bubbleChart("Algeria");
+        lineChart("Algeria");
     });
 }
 
-init()
+// init()
 
